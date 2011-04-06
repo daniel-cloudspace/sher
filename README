@@ -1,0 +1,18 @@
+Sher < http://github.com/UdderWeb/sher >
+
+WHAT IS SHER?
+
+    Sher (pronounced: "Share") is a Django app designed to allow you to upload
+    your media and have it share it across your various
+    social networking accounts.
+
+CURRENT FEATURES:
+
+    * Nothing. This is a skeleton of a project to come.
+
+NOTES:
+
+    This is by no means production-ready code. Do not actually use it in
+    production unless you wish to be eaten by a grue.
+
+    Questions/Comments? Please check us out on IRC via irc://udderweb.com/#uw
