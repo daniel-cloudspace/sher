@@ -1,5 +1,8 @@
 from django.db import models
+from django.conf import settings
+from os.path import join
 
+UPLOAD_PATH = join(settings.MEDIA_ROOT, "%s")
 
 class Status(models.Model):
     """
@@ -15,7 +18,7 @@ class Status(models.Model):
 
     class Meta:
         ordering = ['share_time']
-
+        verbose_name_plural = "Statuses"
 
 class Image(models.Model):
     """
@@ -25,7 +28,7 @@ class Image(models.Model):
     expire_time = models.DateTimeField(blank=True, null=True)
     posted = models.BooleanField()
     title = models.CharField(max_length=100)
-    image = models.ImageField()
+    image = models.ImageField(upload_to=UPLOAD_PATH % "images")
 
     def __unicode__(self):
         return self.title
@@ -69,10 +72,38 @@ class Video(models.Model):
     expire_time = models.DateTimeField(blank=True, null=True)
     posted = models.BooleanField()
     title = models.CharField(max_length=100)
-    video = models.FileField()
+    category = models.CharField(max_length=50, blank=True, help_text="Single cateogry this video belongs to.")
+    description = models.TextField(blank=True, help_text="Short video description.")
+    keywords = models.CharField(max_length=250, blank=True, help_text="Keywords seperated by comma.")
+    video = models.FileField(upload_to = UPLOAD_PATH % "videos")
 
     def __unicode__(self):
         return self.title
 
     class Meta:
         ordering = ['share_time']
+
+    #If posted, connect to signal.
+
+class Service(models.Model):
+    name = models.CharField(max_length=255, unique=True)
+
+    def __unicode__(self):
+        return self.name
+
+    @models.permalink
+    def get_authorize_url(self):
+        return ("%s-authorize" % self.name.lower(),)
+
+class Account(models.Model):
+    user = models.CharField(max_length=255, blank=True)
+    oauth_token = models.CharField(max_length=255, blank=True)
+    oauth_secret = models.CharField(max_length=255, blank=True)
+    authsub_token = models.CharField(max_length=255, blank=True)
+    service = models.ForeignKey(Service)   
+ 
+    def __unicode__(self):
+        return "%s - %s " % (self.user, self.service)
+    
+
+

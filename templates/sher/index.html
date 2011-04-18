@@ -1,0 +1,15 @@
+{% extends 'sher/base.html' %}
+
+{% block content %}
+<ul>
+{% for s in services%}
+    <li> 
+        <h3>{{ s }} </h3>
+        <hr>
+        <a href="{{ s.get_authorize_url }}" title="{{ s }} authorize.">Authorize {{ s }}</a>
+
+    </li>
+{% endfor %}
+</ul>
+
+{% endblock %}
