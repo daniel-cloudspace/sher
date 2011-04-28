@@ -2,11 +2,14 @@ from django.http import HttpResponseRedirect, HttpResponse, Http404
 from sher.models import Account, Service
 from django.shortcuts import render
 import sher.settings as settings
-from sher.services import twitter_service, youtube_service, facebook_service
+from sher.services import twitter_service, youtube_service, facebook_service, flickr_service
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 import urllib
 import urllib2
+import re
+
+#TODO: Get rid of all hardcoded urls and put them in settings.
 
 def index(request, template="sher/index.html"):
     """
@@ -121,7 +124,28 @@ def facebook_callback(request):
     return HttpResponseRedirect(reverse("sher-index"))
 
 def flickr_authorize(request):
-    pass
+    url = flickr_service.get_oauth_url()
+    return HttpResponseRedirect(url)
 
 def flickr_callback(request):
-    pass
+    if 'frob' in request.GET:
+        frob = request.GET['frob']
+        auth_token_url = flickr_service.get_auth_token(frob)
+        data = urllib2.urlopen(auth_token_url).read()
+        auth_token = re.search('<token>(.*)</token>', data).groups()[0]
+       
+
+        sobj, c = Service.objects.get_or_create(name__iexact="flickr")
+        try:
+            Account.objects.get(oauth_token=auth_token, service=sobj)
+        except Account.DoesNotExist:
+            account = Account()
+            account.user = "tsoporan"
+            account.oauth_token = auth_token
+            account.service = sobj
+            account.save()
+
+    messages.success(request, "App authorized with Flickr")
+    return HttpResponseRedirect(reverse("sher-index"))
+
+
