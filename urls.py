@@ -1,6 +1,7 @@
 from django.conf.urls.defaults import patterns, include, url
 
-from sher.views import index, authorize_twitter, twitter_callback, authorize_youtube, youtube_callback, authorize_facebook, facebook_callback, flickr_authorize, flickr_callback
+from sher.views.auth import authorize_twitter, twitter_callback, authorize_youtube, youtube_callback, authorize_facebook, facebook_callback, flickr_authorize, flickr_callback
+from sher.views.main import index
 
 urlpatterns = patterns('', 
     url(r'^$', index, name="sher-index"), 

@@ -12,6 +12,7 @@ class Status(models.Model):
     share_time = models.DateTimeField(auto_now_add=True)
     posted = models.BooleanField()
     text = models.CharField(max_length=160)
+    account = models.ForeignKey("Account", help_text="The account you want to post as.")
 
     def __unicode__(self):
         return self.text
@@ -29,13 +30,13 @@ class Image(models.Model):
     posted = models.BooleanField()
     title = models.CharField(max_length=100)
     image = models.ImageField(upload_to=UPLOAD_PATH % "images")
+    account = models.ForeignKey("Account", help_text="The account you want to post as.")
 
     def __unicode__(self):
         return self.title
 
     class Meta:
         ordering = ['share_time']
-
 
 class Post(models.Model):
     """
@@ -47,13 +48,13 @@ class Post(models.Model):
     posted = models.BooleanField()
     subject = models.CharField(max_length=160)
     body = models.TextField()
+    account = models.ForeignKey("Account", help_text="The account you want to post as.")
 
     def __unicode__(self):
         return self.subject
 
     class Meta:
         ordering = ['share_time']
-
 
 # TODO: Find video plugin for Django? django-video or django-videologue, maybe?
 # https://github.com/andrewebdev/django-video
@@ -76,14 +77,13 @@ class Video(models.Model):
     description = models.TextField(blank=True, help_text="Short video description.")
     keywords = models.CharField(max_length=250, blank=True, help_text="Keywords seperated by comma.")
     video = models.FileField(upload_to = UPLOAD_PATH % "videos")
+    account = models.ForeignKey("Account", help_text="The account you want to post as.")
 
     def __unicode__(self):
         return self.title
 
     class Meta:
         ordering = ['share_time']
-
-    #If posted, connect to signal.
 
 class Service(models.Model):
     name = models.CharField(max_length=255, unique=True)
@@ -101,9 +101,6 @@ class Account(models.Model):
     oauth_secret = models.CharField(max_length=255, blank=True)
     authsub_token = models.CharField(max_length=255, blank=True)
     service = models.ForeignKey(Service)   
- 
+
     def __unicode__(self):
         return "%s - %s " % (self.user, self.service)
-    
-
-

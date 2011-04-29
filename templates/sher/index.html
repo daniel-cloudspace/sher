@@ -1,6 +1,11 @@
 {% extends 'sher/base.html' %}
 
 {% block content %}
+
+{% if not services %}
+    <h1>There are no services yet!</h1>
+    <p>You can use the admin interface to add some services, currently supported services are: <strong>youtube, facebook, twitter and flickr</strong>.</p>
+{% else %}
 <ul>
 {% for s in services%}
     <li> 
@@ -11,5 +16,5 @@
     </li>
 {% endfor %}
 </ul>
-
+{% endif %}
 {% endblock %}

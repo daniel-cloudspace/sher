@@ -13,9 +13,12 @@ class TwitterService(object):
         self.consumer_secret = consumer_secret
         self.consumer = oauth.Consumer(self.consumer_key, self.consumer_secret)
         self.client = oauth.Client(self.consumer)        
+        self.access_token_url = "https://api.twitter.com/oauth/access_token"
+        self.request_token_url = "https://api.twitter.com/oauth/request_token"
+        self.authorize_url = "https://api.twitter.com/oauth/authorize"
 
     def get_request_token(self):
-        request_token_url = settings.TWITTER_REQUEST_TOKEN_URL
+        request_token_url = self.request_token_url 
         resp, content = self.client.request(request_token_url, "POST")
 
         if resp['status'] != '200': 
@@ -28,7 +31,7 @@ class TwitterService(object):
         return self.request_token
 
     def get_access_token(self, oauth_verifier):
-        access_token_url = settings.TWITTER_ACCESS_TOKEN_URL
+        access_token_url = self.access_token_url
         
         token = oauth.Token(self.request_token, self.request_token_secret)
         token.set_verifier(oauth_verifier)
@@ -46,6 +49,9 @@ class TwitterService(object):
 
         return access_token
 
+    def get_oauth_url(self, request_token):
+        return "%s?oauth_token=%s" % (self.authorize_url, request_token)
+    
     def authenticated(self, account):
         """Return an authenticated twitter API instance (python-twitter)"""
 
@@ -141,9 +147,9 @@ class FlickrService(object):
         url = self.gen_sig(self.rest_url, api_key=self.api_key, method="flickr.auth.getToken", frob=token) 
         return url
 
-    def authenticated(self, account):
+    def authenticated(self, account, format="json"):
         import flickrapi
-        api = flickrapi.FlickrAPI(settings.FLICKR_KEY, secret=settings.FLICKR_SECRET, token = account.oauth_token)
+        api = flickrapi.FlickrAPI(settings.FLICKR_KEY, secret=settings.FLICKR_SECRET, token = account.oauth_token, format=format)
         return api
 
 flickr_service = FlickrService(settings.FLICKR_KEY, settings.FLICKR_SECRET)
