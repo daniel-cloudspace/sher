@@ -1,0 +1,13 @@
+Django    
+PIL        
+Python      
+South        
+django-extensions
+docutils 
+flickrapi
+gdata   
+httplib2 
+oauth2
+python-twitter 
+simplejson
+wsgiref
