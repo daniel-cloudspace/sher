@@ -87,6 +87,8 @@ class YouTubeService(object):
        
     def authenticated(self, account):
         self.yt_service.SetAuthSubToken(account.authsub_token)
+        self.yt_service.developer_key = self.developer_key
+        self.yt_service.client_id = self.client_id
         return self.yt_service
          
 youtube_service = YouTubeService(settings.YOUTUBE_DEVELOPER_KEY, settings.YOUTUBE_CLIENT_ID)
@@ -147,9 +149,9 @@ class FlickrService(object):
         url = self.gen_sig(self.rest_url, api_key=self.api_key, method="flickr.auth.getToken", frob=token) 
         return url
 
-    def authenticated(self, account, format="json"):
+    def authenticated(self, account, format="etree"):
         import flickrapi
-        api = flickrapi.FlickrAPI(settings.FLICKR_KEY, secret=settings.FLICKR_SECRET, token = account.oauth_token, format=format)
-        return api
+        return flickrapi.FlickrAPI(settings.FLICKR_KEY, secret=settings.FLICKR_SECRET, token = account.oauth_token, format=format)
+
 
 flickr_service = FlickrService(settings.FLICKR_KEY, settings.FLICKR_SECRET)
