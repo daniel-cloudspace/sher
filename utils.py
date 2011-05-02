@@ -25,4 +25,3 @@ def get_auth_service(service="", account_user=""):
         raise Account.DoesNotExist("This account does not exist.")
     except Exception, e:
         raise e
-        

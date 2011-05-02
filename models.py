@@ -4,15 +4,53 @@ from os.path import join
 
 UPLOAD_PATH = join(settings.MEDIA_ROOT, "%s")
 
+#youtube valid categories, grabbed from http://gdata.youtube.com/schemas/2007/categories.cat
+categories = {'Animals': 'Pets & Animals',
+ 'Autos': 'Autos & Vehicles',
+ 'Comedy': 'Comedy',
+ 'Education': 'Education',
+ 'Entertainment': 'Entertainment',
+ 'Film': 'Film & Animation',
+ 'Games': 'Gaming',
+ 'Howto': 'Howto & Style',
+ 'Movies': 'Movies',
+ 'Movies_Action_adventure': 'Movies - Action/Adventure',
+ 'Movies_Anime_animation': 'Movies - Anime/Animation',
+ 'Movies_Classics': 'Movies - Classics',
+ 'Movies_Comedy': 'Movies - Comedy',
+ 'Movies_Documentary': 'Movies - Documentary',
+ 'Movies_Drama': 'Movies - Drama',
+ 'Movies_Family': 'Movies - Family',
+ 'Movies_Foreign': 'Movies - Foreign',
+ 'Movies_Horror': 'Movies - Horror',
+ 'Movies_Sci_fi_fantasy': 'Movies - Sci-Fi/Fantasy',
+ 'Movies_Shorts': 'Movies - Shorts',
+ 'Movies_Thriller': 'Movies - Thriller',
+ 'Music': 'Music',
+ 'News': 'News & Politics',
+ 'Nonprofit': 'Nonprofits & Activism',
+ 'People': 'People & Blogs',
+ 'Shortmov': 'Short Movies',
+ 'Shows': 'Shows',
+ 'Sports': 'Sports',
+ 'Tech': 'Science & Technology',
+ 'Trailers': 'Trailers',
+ 'Travel': 'Travel & Events',
+ 'Videoblog': 'Videoblogging'}
+
+category_choices = tuple([(k,v) for k,v in categories.items()])
+
+#status_choices = ()
+
 class Status(models.Model):
     """
     What Twitter made famous. Short messages, <160 characters, and
     meant to be sent out over such networks.
     """
     share_time = models.DateTimeField(auto_now_add=True)
-    posted = models.BooleanField()
     text = models.CharField(max_length=160)
     account = models.ForeignKey("Account", help_text="The account you want to post as.")
+    is_published = models.BooleanField(editable=False, default=0)
 
     def __unicode__(self):
         return self.text
@@ -27,9 +65,13 @@ class Image(models.Model):
     """
     share_time = models.DateTimeField(auto_now_add=True)
     expire_time = models.DateTimeField(blank=True, null=True)
-    posted = models.BooleanField()
     title = models.CharField(max_length=100)
     image = models.ImageField(upload_to=UPLOAD_PATH % "images")
+    description = models.TextField(help_text="The description of the photo.", blank=True)
+    tags = models.CharField(max_length=255,help_text="Space-delimited list of tags. Tags that contain spaces need to be quoted. Ex. \"central station\" ", blank=True)
+    is_public = models.BooleanField(default=1, help_text="True if photo is public, false if it is private. Default is public.")
+    is_published = models.BooleanField(editable=False, default=0)
+    
     account = models.ForeignKey("Account", help_text="The account you want to post as.")
 
     def __unicode__(self):
@@ -45,9 +87,8 @@ class Post(models.Model):
     """
     share_time = models.DateTimeField(auto_now_add=True)
     expire_time = models.DateTimeField(blank=True, null=True)
-    posted = models.BooleanField()
-    subject = models.CharField(max_length=160)
-    body = models.TextField()
+    text = models.TextField()
+    is_published = models.BooleanField(editable=False, default=0)
     account = models.ForeignKey("Account", help_text="The account you want to post as.")
 
     def __unicode__(self):
@@ -71,12 +112,12 @@ class Video(models.Model):
     """
     share_time = models.DateTimeField(auto_now_add=True)
     expire_time = models.DateTimeField(blank=True, null=True)
-    posted = models.BooleanField()
     title = models.CharField(max_length=100)
-    category = models.CharField(max_length=50, blank=True, help_text="Single cateogry this video belongs to.")
+    category = models.CharField(max_length=50, choices=category_choices, help_text="Single cateogry this video belongs to.")
     description = models.TextField(blank=True, help_text="Short video description.")
     keywords = models.CharField(max_length=250, blank=True, help_text="Keywords seperated by comma.")
     video = models.FileField(upload_to = UPLOAD_PATH % "videos")
+    is_published = models.BooleanField(editable=False, default=0)
     account = models.ForeignKey("Account", help_text="The account you want to post as.")
 
     def __unicode__(self):
