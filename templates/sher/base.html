@@ -6,11 +6,26 @@
     <style>
         ul li { list-style: none; }
 
+        #messages li {
+            background: #eee;
+            padding: 5px;
+        }
+
     </style>
 
 </head>
 
 <body>
+
+{% if messages %}
+<ul id="messages">
+    {% for m in messages %}
+    <li> {{ m }} </li>
+    {% endfor %}
+</ul>
+
+{% endif %}
+
 
 {% block content %}{% endblock content %}
 
