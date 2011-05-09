@@ -49,8 +49,9 @@ class Status(models.Model):
     """
     share_time = models.DateTimeField(auto_now_add=True)
     text = models.CharField(max_length=160)
-    account = models.ForeignKey("Account", help_text="The account you want to post as.")
     is_published = models.BooleanField(editable=False, default=0)
+
+    services = models.ManyToManyField('Service')
 
     def __unicode__(self):
         return self.text
@@ -72,7 +73,7 @@ class Image(models.Model):
     is_public = models.BooleanField(default=1, help_text="True if photo is public, false if it is private. Default is public.")
     is_published = models.BooleanField(editable=False, default=0)
     
-    account = models.ForeignKey("Account", help_text="The account you want to post as.")
+    services = models.ManyToManyField('Service')
 
     def __unicode__(self):
         return self.title
@@ -89,7 +90,8 @@ class Post(models.Model):
     expire_time = models.DateTimeField(blank=True, null=True)
     text = models.TextField()
     is_published = models.BooleanField(editable=False, default=0)
-    account = models.ForeignKey("Account", help_text="The account you want to post as.")
+    
+    services = models.ManyToManyField('Service')
 
     def __unicode__(self):
         return self.subject
@@ -118,7 +120,8 @@ class Video(models.Model):
     keywords = models.CharField(max_length=250, blank=True, help_text="Keywords seperated by comma.")
     video = models.FileField(upload_to = UPLOAD_PATH % "videos")
     is_published = models.BooleanField(editable=False, default=0)
-    account = models.ForeignKey("Account", help_text="The account you want to post as.")
+    
+    services = models.ManyToManyField('Service')
 
     def __unicode__(self):
         return self.title
@@ -127,10 +130,11 @@ class Video(models.Model):
         ordering = ['share_time']
 
 class Service(models.Model):
-    name = models.CharField(max_length=255, unique=True)
-
+    name = models.CharField(max_length=255, unique=True, help_text="Service name. i.e youtube")
+    account = models.ForeignKey('Account', help_text="The account you want to post as.")
+    
     def __unicode__(self):
-        return self.name
+        return "Service: %s | Account: %s"  % ( self.name, self.account.user)
 
     @models.permalink
     def get_authorize_url(self):
@@ -141,7 +145,6 @@ class Account(models.Model):
     oauth_token = models.CharField(max_length=255, blank=True)
     oauth_secret = models.CharField(max_length=255, blank=True)
     authsub_token = models.CharField(max_length=255, blank=True)
-    service = models.ForeignKey(Service)   
 
     def __unicode__(self):
-        return "%s - %s " % (self.user, self.service)
+        return "Account: %s"  % (self.user,)
