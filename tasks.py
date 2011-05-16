@@ -3,6 +3,7 @@ from celery.decorators import task
 import logging
 
 from sher.utils import get_services, get_account, get_services_list
+from sher.utils import shorten_url as _s
 import sher.models
 
 #TODO: - logging
@@ -65,7 +66,7 @@ def image_task(instance):
             photo_id = last_photo.attrib['id']
 
             #post twitter and facebook image url
-            post_msg = post_msg % (flickr_photo_url % (owner_id, photo_id))
+            post_msg = post_msg % _s(flickr_photo_url % (owner_id, photo_id))
 
             if tw_api:
                 tw_api.PostUpdate(post_msg)
@@ -128,7 +129,7 @@ def video_task(instance):
             link = entry.GetHtmlLink().href
 
             #post twitter/facebook youtube link
-            post_msg = post_msg % link 
+            post_msg = post_msg % _s(link)
             
             if tw_api:
                 tw_api.PostUpdate(post_msg)
