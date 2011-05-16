@@ -1,0 +1,29 @@
+from django.conf import settings
+
+if settings.DEBUG:
+    HOST_URL = "http://localhost:8200"
+else:
+    HOST_URL = "http://example.com/"
+
+TWITTER_CONSUMER_KEY = ""
+TWITTER_CONSUMER_SECRET = ""
+
+YOUTUBE_DEVELOPER_KEY = ""
+YOUTUBE_CLIENT_ID = "" #your app client id
+
+FACEBOOK_APP_ID = ""
+FACEBOOK_APP_KEY = ""
+FACEBOOK_APP_SECRET = ""
+
+FLICKR_KEY = ""
+FLICKR_SECRET = ""
+
+
+SUPPORTED_SERVICES = (
+    ('youtube', 'YouTube'),
+    ('flickr', 'Flickr'),
+    ('facebook', 'Facebook'),
+    ('twitter', 'Twitter'),
+)
+
+#####--^
