@@ -1,27 +1,31 @@
 from sher.models import Account, Service
-from sher.services import twitter_service, youtube_service, facebook_service, flickr_service 
 
-def get_auth_service(service="", account_user=""):
-    """Responsible for returning an authenticated instance of the service for account user."""   
-    assert service and account_user, "Need an account username and service name to work"
+def get_services_list(text):
     
-    service = service.lower()
-    try:
-        service_obj = Service.objects.get(name__iexact=service)
-        account_obj = Account.objects.get(user__iexact=account_user, service=service_obj) 
-        
-        if service == "twitter":
-            return twitter_service.authenticated(account_obj)
-        if service == "facebook":
-            return facebook_service.authenticated(account_obj)
-        if service == "flickr": 
-            return flickr_service.authenticated(account_obj)
-        if service == "youtube": 
-            return youtube_service.authenticated(account_obj)
+    if text.find(',') != -1: #comma split 
+        slist = text.split(',')
+    else:
+        slist = text.split() #by space
 
-    except Service.DoesNotExist:
-        raise Service.DoesNotExist("This service does not exist.")
-    except Account.DoesNotExist:
-        raise Account.DoesNotExist("This account does not exist.")
-    except Exception, e:
-        raise e
+    return slist
+
+def get_account(service_name):
+    return Account.objects.get(service_name__iexact=service_name)
+
+def get_services(services):
+    
+    mod = __import__('sher.services', fromlist=['*'])
+    
+    sdict = {}
+
+    for s in services:
+        s = s.lower()
+        try:
+            sdict[s] = getattr(mod, '%s_service' % s)
+        except AttributeError:
+            pass
+    
+    for name,service in sdict.items():
+        sdict[name] = service.authenticated(get_account(name)) 
+
+    return sdict #return service name: authenticated api instance

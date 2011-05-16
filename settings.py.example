@@ -26,4 +26,3 @@ SUPPORTED_SERVICES = (
     ('twitter', 'Twitter'),
 )
 
-#####--^

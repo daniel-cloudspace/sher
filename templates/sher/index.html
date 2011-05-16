@@ -8,12 +8,21 @@
 {% else %}
 <ul>
 {% for s in services%}
+    {% if not s.is_authed %}
+
     <li> 
         <h3>{{ s }} </h3>
         <hr>
         <a href="{{ s.get_authorize_url }}" title="{{ s }} authorize.">Authorize {{ s }}</a>
 
     </li>
+    {% else %}
+    <li>
+        <h3> {{s }} </h3>
+        <hr>
+        <p> {{ s }} is authed. </p>
+    </li>
+    {% endif %}
 {% endfor %}
 </ul>
 {% endif %}

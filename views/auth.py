@@ -37,14 +37,13 @@ def twitter_callback(request):
     oauth_verifier = request.GET['oauth_verifier']
     access_token = twitter_service.get_access_token(oauth_verifier)
     
-    sobj, c = Service.objects.get_or_create(name__iexact="twitter")
     try:
-        Account.objects.get(oauth_token=access_token['oauth_token'], service=sobj)
+        account = Account.objects.get(oauth_token=access_token['oauth_token'], service_name="twitter")
     except Account.DoesNotExist:
         account = Account()
         account.oauth_token = access_token['oauth_token']
         account.oauth_secret = access_token['oauth_token_secret']
-        account.service = sobj
+        account.service_name = "twitter"
         account.save()
 
         #update the user
@@ -53,7 +52,6 @@ def twitter_callback(request):
         account.user = current_user
         account.save()
 
-    
     messages.success(request, "App authorized with Twitter.")
     return HttpResponseRedirect(reverse("sher-index"))
 
@@ -77,13 +75,12 @@ def youtube_callback(request):
     upgraded_token = youtube_service.upgrade_to_session(token)
 
     
-    sobj, c = Service.objects.get_or_create(name__iexact="youtube")
     try:
-        Account.objects.get(authsub_token=upgraded_token, service=sobj)
+        account = Account.objects.get(authsub_token=upgraded_token, service_name="youtube")
     except Account.DoesNotExist:
         account = Account()
         account.authsub_token = upgraded_token
-        account.service = sobj
+        account.service_name = "youtube"
         account.save()
    
         #update the user
@@ -121,13 +118,12 @@ def facebook_callback(request):
         access_token_url = facebook_service.get_access_token_url(callback, code) 
         access_token = urllib2.urlopen(access_token_url).read().split('access_token=')[1]       
         
-        sobj, c = Service.objects.get_or_create(name__iexact="facebook")
         try:
-            Account.objects.get(oauth_token=access_token, service=sobj)
+            account = Account.objects.get(oauth_token=access_token, service_name="facebook")
         except Account.DoesNotExist:
             account = Account()
             account.oauth_token = access_token
-            account.service = sobj
+            account.service_name = "facebook"
             account.save()
 
             #update user
@@ -135,6 +131,7 @@ def facebook_callback(request):
             current_user = api.request('me')['username']
             account.user = current_user
             account.save()
+        
 
     messages.success(request, "App authorized with Facebook")
     return HttpResponseRedirect(reverse("sher-index"))
@@ -150,13 +147,12 @@ def flickr_callback(request):
         data = urllib2.urlopen(auth_token_url).read()
         auth_token = re.search('<token>(.*)</token>', data).groups()[0]
        
-        sobj, c = Service.objects.get_or_create(name__iexact="flickr")
         try:
-            Account.objects.get(oauth_token=auth_token, service=sobj)
+            account = Account.objects.get(oauth_token=auth_token, service_name="flickr")
         except Account.DoesNotExist:
             account = Account()
             account.oauth_token = auth_token
-            account.service = sobj
+            account.service_name = "flickr"
             account.save()
 
             #update user

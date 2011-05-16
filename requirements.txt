@@ -11,3 +11,4 @@ oauth2
 python-twitter 
 simplejson
 wsgiref
+djcelery (celery)
