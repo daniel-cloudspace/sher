@@ -27,7 +27,6 @@ def post_handler(sender, instance, created, **kwargs):
     #not impemented yet
     pass
 
-
 post_save.connect(receiver=status_handler, sender=sher.models.Status)
 post_save.connect(receiver=post_handler, sender=sher.models.Post)
 post_save.connect(receiver=image_handler, sender=sher.models.Image)

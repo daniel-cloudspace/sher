@@ -3,6 +3,7 @@ from celery.decorators import task
 import logging
 
 from sher.utils import get_services, get_account, get_services_list
+import sher.models
 
 #TODO: - logging
 
@@ -121,6 +122,7 @@ def video_task(instance):
             
             entry = yt_api.InsertVideoEntry(video_entry, video_file_path)
             
+            account = get_account("youtube")
             videos = yt_api.GetYouTubeUserFeed(username=account.user)
             entry = videos.entry[0]
             link = entry.GetHtmlLink().href
