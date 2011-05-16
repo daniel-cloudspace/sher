@@ -6,6 +6,7 @@ import datetime
 UPLOAD_PATH = join(settings.MEDIA_ROOT, "%s")
 
 #youtube valid categories, grabbed from http://gdata.youtube.com/schemas/2007/categories.cat
+#TODO: some of these cause issues with validation
 categories = {'Animals': 'Pets & Animals',
  'Autos': 'Autos & Vehicles',
  'Comedy': 'Comedy',

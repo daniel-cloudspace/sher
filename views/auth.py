@@ -10,14 +10,6 @@ import urllib2
 import re
 from urlparse import urljoin
 
-
-#APIS
-import twitter
-import gdata.youtube
-from sher.apis import facebook
-import flickrapi
-
-
 def authorize_twitter(request):
     """
     Handles getting the request token from the twitter API, redirects user to a page

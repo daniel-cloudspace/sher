@@ -2,12 +2,14 @@ from celery.decorators import task
 
 import logging
 
-from sher.utils import get_services, get_account
+from sher.utils import get_services, get_account, get_services_list
+
+#TODO: - logging
 
 @task
-def status_task(instance, services):
-    if not services: return    
+def status_task(instance):
 
+    services = get_services_list(instance.services)
     sdict = get_services(services)
     
     post_msg = instance.text
@@ -29,12 +31,14 @@ def status_task(instance, services):
         raise e
 
 @task
-def image_task(instance, services={}):
-    if not services: return
+def image_task(instance):
+   
+    services = get_services_list(instance.services)
+    sdict = get_services(services)
     
-    fl_api = services.get('flickr', None)
-    tw_api = services.get('twitter', None)
-    fb_api = services.get('facebook', None)
+    fl_api = sdict.get('flickr', None)
+    tw_api = sdict.get('twitter', None)
+    fb_api = sdict.get('facebook', None)
    
     post_msg = "New image posted check it out: %s"
 
@@ -75,17 +79,19 @@ def image_task(instance, services={}):
             raise e
 
 
-#@task
-#def post_task():
-#    pass #not implemented yet
-
+@task
+def post_task():
+    pass #not implemented yet
 
 @task
-def video_task(instance, account, services={}):
-    if not services: return
-    yt_api = services.get('youtube', None)
-    tw_api = services.get('twitter', None)
-    fb_api = services.get('facebook', None)
+def video_task(instance):
+    
+    services = get_services_list(instance.services)
+    sdict = get_services(services)
+    
+    yt_api = sdict.get('youtube', None)
+    tw_api = sdict.get('twitter', None)
+    fb_api = sdict.get('facebook', None)
 
     import gdata.media
     import gdata.youtube

@@ -10,24 +10,18 @@ import logging
 
 def status_handler(sender, instance, created, using, **kwargs):
 
-    services = sher.utils.get_services_list(instance.services)
-
     if created:
-        status_task.apply_async(args=[instance, services], eta=instance.share_time)
+        status_task.apply_async(args=[instance,], eta=instance.share_time)
 
 def image_handler(sender, instance, created, using, **kwargs):
     
-    services = sher.utils.get_services_list(instance.services)
-
     if created:
-        image_task.apply_async(args=[instance, services], eta=instance.share_time)
+        image_task.apply_async(args=[instance,], eta=instance.share_time)
 
 def video_handler(sender, instance, created, using, **kwargs):
     
-    services = sher.utils.get_services_list(instance.services)
-   
     if created:
-        video_task.apply_async(args=[instance, services], eta=instance.share_time)
+        video_task.apply_async(args=[instance,], eta=instance.share_time)
 
 def post_handler(sender, instance, created, **kwargs):  
     #not impemented yet
