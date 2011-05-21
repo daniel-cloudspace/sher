@@ -14,7 +14,7 @@ class VideoAdmin(admin.ModelAdmin):
     list_display = ['title', 'share_time', 'category', 'video', 'is_published']
 
 class AccountAdmin(admin.ModelAdmin):
-    list_display = ['user', 'oauth_token', 'oauth_secret', 'authsub_token', 'service_name']
+    list_display = ['user', 'service_name', 'oauth_token', 'oauth_secret', 'authsub_token']
 
 admin.site.register(Status, StatusAdmin)
 admin.site.register(Post, PostAdmin)

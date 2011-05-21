@@ -3,7 +3,7 @@ from celery.decorators import task
 import logging
 
 from sher.utils import get_services, get_account, get_services_list
-from sher.utils import shorten_url as _s
+from sher.utils import shorten_url as shorten
 import sher.models
 
 #TODO: - logging
@@ -56,7 +56,9 @@ def image_task(instance):
                 is_public = 1 if instance.is_public else 0,
             )
 
+
             flickr_photo_url = "http://www.flickr.com/photos/%s/%s/"
+
 
             user = fl_api.photos_search(user_id="me") #get photos of authed user
             photos = user.find('photos')
@@ -66,7 +68,11 @@ def image_task(instance):
             photo_id = last_photo.attrib['id']
 
             #post twitter and facebook image url
-            post_msg = post_msg % _s(flickr_photo_url % (owner_id, photo_id))
+            short_url = shorten(
+                flickr_photo_url % (owner_id, photo_id)
+            )
+
+            post_msg = post_msg % short_url 
 
             if tw_api:
                 tw_api.PostUpdate(post_msg)
@@ -129,7 +135,10 @@ def video_task(instance):
             link = entry.GetHtmlLink().href
 
             #post twitter/facebook youtube link
-            post_msg = post_msg % _s(link)
+            short_url = shorten(
+                link,
+            )
+            post_msg = post_msg % short_url
             
             if tw_api:
                 tw_api.PostUpdate(post_msg)
