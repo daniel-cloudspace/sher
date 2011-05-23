@@ -18,7 +18,6 @@ FACEBOOK_APP_SECRET = ""
 FLICKR_KEY = ""
 FLICKR_SECRET = ""
 
-
 SUPPORTED_SERVICES = (
     ('youtube', 'YouTube'),
     ('flickr', 'Flickr'),
